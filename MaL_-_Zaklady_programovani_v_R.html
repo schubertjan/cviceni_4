@@ -135,14 +135,15 @@ $(document).ready(function () {
 <pre><code>## [1] &quot;C:/Users/schubertj/OneDrive - Kantar/Documents/MaL/Cviceni 4&quot;</code></pre>
 <p>Vetsinou ale nebudete pracovat v domovskem adresari a vypisovani cele cesty muze byt zdlouhave. Proto budete vetsinou pouzivat relativni cestu k vasemu souboru. Jak vidite z me working directory, pracuji prave v adresari Cviceni 4. Pokud bych chtel napriklad do R nacist soubor z tohoto adresare, muzu bud vypsat celou cestu, nebo vyuzit relativni cesty, ktera se v R znaci pomoci tecky - <code>.</code>. Kuprikladu mohu vytisknout vsechny soubory v mem soucasnem adresari pomoci prikazu <code>list.files(&quot;./&quot;)</code> aniz bych musel specifikovat celou cestu k memu adresari <code>C:/Users/schubertj/OneDrive - Kantar/Documents/MaL/Cviceni 4</code>.</p>
 <pre class="r"><code>list.files(&quot;./&quot;)</code></pre>
-<pre><code>## [1] &quot;data_prostrednik.csv&quot;               
-## [2] &quot;MaL - Zaklady programovani v R.Rmd&quot; 
-## [3] &quot;MaL_-_Zaklady_programovani_v_R.html&quot;
-## [4] &quot;MaL_-_Zaklady_programovani_v_R.Rmd&quot; 
-## [5] &quot;spotify.csv&quot;                        
-## [6] &quot;spss import.png&quot;                    
-## [7] &quot;utils_cviceni4.r&quot;                   
-## [8] &quot;V2006_F1.sav&quot;</code></pre>
+<pre><code>## [1] &quot;data_strednik.csv&quot;                  
+## [2] &quot;data_strednik_carka_desetinne.csv&quot;  
+## [3] &quot;MaL - Zaklady programovani v R.Rmd&quot; 
+## [4] &quot;MaL_-_Zaklady_programovani_v_R.html&quot;
+## [5] &quot;MaL_-_Zaklady_programovani_v_R.Rmd&quot; 
+## [6] &quot;spotify.csv&quot;                        
+## [7] &quot;spss_import.png&quot;                    
+## [8] &quot;utils_cviceni4.r&quot;                   
+## [9] &quot;V2006_F1.sav&quot;</code></pre>
 <p>Vasi working directory si muzete nastavit pomoci funkce <code>setwd</code>, ktera ma jediny argument a tim je cesta k adresari, ktery chcete nastavit jako misto, kde bude R hledat v souborech.</p>
 <pre class="r"><code>setwd(&quot;C:/Users/schubertj/OneDrive - Kantar/Documents/MaL&quot;)</code></pre>
 <p>Ted se zamerime na to, jak muzeme do R nacist externi data. Doted jsme vsechna data, ktera jsme pouzivali zadavali do R primo. V realnem pouzivani ale budete temer vzdy pouzivat externi data. Nejcasteji budete nacitat data ve formatu csv. V base R muzete k nacteni pouzit funkci <code>read.csv</code>. Vetsina parametru funkce <code>read.csv</code> ma nejaky default a tak jedinym povinnym argumentem je <code>file</code>, kde specikujete cestu k souboru, ktery chcete nacist. To bude vetsinou cesta ve vasem pocitaci (viz predchozi koncept o absolutni a relativni ceste), ale muzete to byt i odkaz na csv soubor ulozeny na internetu. Pojdme si zkusit nacist data ze spotify, ktera obsahuji data o ruznych zanrech. <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-21/readme.md">Zde</a> se muzete dozvedet vice o techto datech.</p>
@@ -212,7 +213,8 @@ head(spotify)</code></pre>
 <li><code>sep = &quot; &quot;</code> pro mezeru</li>
 </ul>
 <p>Zde je priklad nacteni souboru, ktery je oddeleny strednikem</p>
-<pre class="r"><code>read.csv(&quot;https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_prostrednik.csv&quot;, sep = &quot;;&quot;)</code></pre>
+<pre class="r"><code>read.csv(&quot;https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik.csv&quot;, 
+         sep = &quot;;&quot;)</code></pre>
 <pre><code>##    cviceni      datum
 ## 1        1 2020-10-06
 ## 2        2 2020-10-13
@@ -224,8 +226,33 @@ head(spotify)</code></pre>
 ## 8        8 2020-11-24
 ## 9        9 2020-12-01
 ## 10      10 2020-12-08</code></pre>
+<p>Stejne tak dulezity je argument <code>dec</code>. V nem specifikujete, jaky symbol ma R ocekavat v cislech na miste desetinne carky. Vetsinou (ne vsak vzdy, je potreba zkontrolovat) plati nasledujici:</p>
+<ul>
+<li>pokud je csv dokument oddelen carkou, bude symbol na desetinna mista tecka <code>.</code></li>
+<li>pokud je csv dokument oddelen strednikem, bude symbol na desetinna mista carka <code>,</code></li>
+</ul>
+<p>Jak si muzete precist v napovede <code>?read.csv</code>, defaultni hodnotou je <code>dec = &quot;.&quot;</code>. Zde je priklad nacteni souboru se symbolem <code>,</code> na miste desetinne carky. Jak vidite, sloupec 1 je nacten spravne jako cislo.</p>
+<pre class="r"><code>df &lt;- read.csv(&quot;https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik_carka_desetinne.csv&quot;,
+         sep = &quot;;&quot;, 
+         dec = &quot;,&quot;)
+print(df)</code></pre>
+<pre><code>##    cviceni      datum
+## 1      1.2 2020-10-06
+## 2      2.2 2020-10-13
+## 3      3.1 2020-10-20
+## 4      4.1 2020-10-27
+## 5      5.1 2020-11-03
+## 6      6.1 2020-11-10
+## 7      7.1 2020-11-17
+## 8      8.1 2020-11-24
+## 9      9.1 2020-12-01
+## 10    10.1 2020-12-08</code></pre>
+<pre class="r"><code>class(df[, 1])</code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
 <p>Dalsim dulezitym argumentem, ktery uvedeme je <code>header</code>. Ten udava, zda ma R pouzit prvni radek dat jako nazev sloupcu vasi tabulky. Defaultni nastaveni je <code>header = TRUE</code>. Pokud vase data neobsahuji nazvy sloupcu pouzijte <code>header=FALSE</code>.</p>
-<pre class="r"><code>read.csv(&quot;https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_prostrednik.csv&quot;, sep = &quot;;&quot;, header = FALSE)</code></pre>
+<pre class="r"><code>read.csv(&quot;https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik.csv&quot;, 
+         sep = &quot;;&quot;, 
+         header = FALSE)</code></pre>
 <pre><code>##         V1         V2
 ## 1  cviceni      datum
 ## 2        1 2020-10-06
@@ -248,7 +275,8 @@ sort(text)</code></pre>
 <pre><code>## [1] velmi dobry  dobry        spatny       velmi spatny
 ## Levels: velmi dobry dobry spatny velmi spatny</code></pre>
 <p>Vsechny textove promenne jsou automaticky nacteny jako factory ve funkci <code>read.csv</code>. Pokud chcete toto nastaveni zmenit a nacist textove promenne jako textove pouzijte <code>stringsAsFactors = FALSE</code>. Nacteme data jeste jednou, tentokrat chceme nacist textove promenne jako textove, ne jako faktory.</p>
-<pre class="r"><code>spotify &lt;- read.csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv&quot;, stringsAsFactors = FALSE)</code></pre>
+<pre class="r"><code>spotify &lt;- read.csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv&quot;, 
+                    stringsAsFactors = FALSE)</code></pre>
 <p>Stejne tak muzete vami vytvorene datove matice ulozit do csv souboru pomoci funkce <code>write.csv</code>. Vetsina klicovych argumentu jako <code>path</code> nebo <code>sep</code> jsou shodne s predchozi funkci. Dalsimi dulezitymi argumenty jsou <code>row.names</code> a <code>col.names</code>, ktere nabiraji hodnot <code>TRUE</code>/<code>FALSE</code> a znaci, zda chcete ulozit nazvy radku nebo sloupcu. Objekt, ktery chcete z vasi R session ulozit specifikujete v argumentu <code>x</code>./</p>
 <pre class="r"><code>#ulozme prvnich 5 radku z dat spotify
 spotify_5row &lt;- head(spotify, 5)

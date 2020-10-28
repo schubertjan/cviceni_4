@@ -56,20 +56,27 @@ read.csv("https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_st
 
 
 Stejne tak dulezity je argument `dec`. V nem specifikujete, jaky symbol ma R ocekavat v cislech na miste desetinne carky. Vetsinou (ne vsak vzdy, je potreba zkontrolovat) plati nasledujici:
+
 * pokud je csv dokument oddelen carkou, bude symbol na desetinna mista tecka `.`
 * pokud je csv dokument oddelen strednikem, bude symbol na desetinna mista carka `,`
 
+
+Jak si muzete precist v napovede `?read.csv`, defaultni hodnotou je `dec = "."`. Zde je priklad nacteni souboru se symbolem `,` na miste desetinne carky. Jak vidite, sloupec 1 je nacten spravne jako cislo.   
 ```{r}
-read.csv("https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik_carka_desetinne.csv",
+df <- read.csv("https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik_carka_desetinne.csv",
          sep = ";", 
          dec = ",")
+print(df)
+class(df[, 1])
 ```
 
 
-Dalsim dulezitym argumentem, ktery uvedeme je `header`. Ten udava, zda ma R pouzit prvni radek dat jako nazev sloupcu vasi tabulky. Defaultni nastaveni je `header = TRUE`. Pokud vase data neobsahuji nazvy sloupcu pouzijte `header=FALSE`.
+Dalsim dulezitym argumentem, ktery uvedeme je `header`. Ten udava, zda ma R pouzit prvni radek dat jako nazev sloupcu vasi tabulky. Defaultni nastaveni je `header = TRUE`. Pokud vase data neobsahuji nazvy sloupcu pouzijte `header=FALSE`. Jak vidite vsechna data se nacetla v poradku. Protoze kazdy `data.frame` potrebuje nejake nazvy sloupcu, pouzije `R` defaultni nazvy `V1` atd.
 ```{r}
-read.csv("https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik.csv", 
-         sep = ";", header = FALSE)
+df <- read.csv("https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik_no_header.csv", sep = ";", dec = ",", header = FALSE)
+
+print(df)
+class(df[, 1])
 ```
 
 
@@ -84,7 +91,8 @@ sort(skala)
 Vsechny textove promenne jsou automaticky nacteny jako factory ve funkci `read.csv`. Pokud chcete toto nastaveni zmenit a nacist textove promenne jako textove pouzijte `stringsAsFactors = FALSE`. Nacteme data jeste jednou, tentokrat chceme nacist textove promenne jako textove, ne jako faktory.
 
 ```{r}
-spotify <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv", stringsAsFactors = FALSE)
+spotify <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv", 
+                    stringsAsFactors = FALSE)
 ```
 
 
@@ -98,7 +106,7 @@ write.csv(file = "spotify.csv", x = spotify_5row, row.names = FALSE)
 Posledni zpusob importovani dat, ktery si ukazeme, je import souboru vytvorenych v programu SPSS (koncici priponou .sav). SPSS je program pouzivanych pri analyze sociologickych dat. Importovat ho muzete pomoci nabidky v programu Rstudio.
 
 
-![](C:/Users/schubertj/OneDrive - Kantar/Documents/MaL/Cviceni 4/spss import.png)
+![](C:/Users/schubertj/OneDrive - Kantar/Documents/MaL/Cviceni 4/spss_import.png)
 
 Nebo pomoci nasledujiciho kodu.
 ```{r}
