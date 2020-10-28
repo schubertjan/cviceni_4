@@ -137,10 +137,10 @@ $(document).ready(function () {
 <pre class="r"><code>list.files(&quot;./&quot;)</code></pre>
 <pre><code>## [1] &quot;data_strednik.csv&quot;                  
 ## [2] &quot;data_strednik_carka_desetinne.csv&quot;  
-## [3] &quot;MaL - Zaklady programovani v R.Rmd&quot; 
-## [4] &quot;MaL_-_Zaklady_programovani_v_R.html&quot;
-## [5] &quot;MaL_-_Zaklady_programovani_v_R.Rmd&quot; 
-## [6] &quot;spotify.csv&quot;                        
+## [3] &quot;data_strednik_no_header.csv&quot;        
+## [4] &quot;MaL - Zaklady programovani v R.Rmd&quot; 
+## [5] &quot;MaL_-_Zaklady_programovani_v_R.html&quot;
+## [6] &quot;MaL_-_Zaklady_programovani_v_R.Rmd&quot; 
 ## [7] &quot;spss_import.png&quot;                    
 ## [8] &quot;utils_cviceni4.r&quot;                   
 ## [9] &quot;V2006_F1.sav&quot;</code></pre>
@@ -249,22 +249,24 @@ print(df)</code></pre>
 ## 10    10.1 2020-12-08</code></pre>
 <pre class="r"><code>class(df[, 1])</code></pre>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-<p>Dalsim dulezitym argumentem, ktery uvedeme je <code>header</code>. Ten udava, zda ma R pouzit prvni radek dat jako nazev sloupcu vasi tabulky. Defaultni nastaveni je <code>header = TRUE</code>. Pokud vase data neobsahuji nazvy sloupcu pouzijte <code>header=FALSE</code>.</p>
-<pre class="r"><code>read.csv(&quot;https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik.csv&quot;, 
-         sep = &quot;;&quot;, 
-         header = FALSE)</code></pre>
+<p>Dalsim dulezitym argumentem, ktery uvedeme je <code>header</code>. Ten udava, zda ma R pouzit prvni radek dat jako nazev sloupcu vasi tabulky. Defaultni nastaveni je <code>header = TRUE</code>. Pokud vase data neobsahuji nazvy sloupcu pouzijte <code>header=FALSE</code>. Jak vidite vsechna data se nacetla v poradku. Protoze kazdy <code>data.frame</code> potrebuje nejake nazvy sloupcu, pouzije <code>R</code> defaultni nazvy <code>V1</code> atd.</p>
+<pre class="r"><code>df &lt;- read.csv(&quot;https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik_no_header.csv&quot;, sep = &quot;;&quot;, dec = &quot;,&quot;, header = FALSE)
+
+print(df)</code></pre>
 <pre><code>##         V1         V2
 ## 1  cviceni      datum
-## 2        1 2020-10-06
-## 3        2 2020-10-13
-## 4        3 2020-10-20
-## 5        4 2020-10-27
-## 6        5 2020-11-03
-## 7        6 2020-11-10
-## 8        7 2020-11-17
-## 9        8 2020-11-24
-## 10       9 2020-12-01
-## 11      10 2020-12-08</code></pre>
+## 2      1,2 2020-10-06
+## 3      2,2 2020-10-13
+## 4      3,1 2020-10-20
+## 5      4,1 2020-10-27
+## 6      5,1 2020-11-03
+## 7      6,1 2020-11-10
+## 8      7,1 2020-11-17
+## 9      8,1 2020-11-24
+## 10     9,1 2020-12-01
+## 11    10,1 2020-12-08</code></pre>
+<pre class="r"><code>class(df[, 1])</code></pre>
+<pre><code>## [1] &quot;factor&quot;</code></pre>
 <p>K ukazce posledniho argementu si nejdrive musime priblizit koncept faktoru (factors). Faktory jsou dalsi tridou (class), kterou muze vektor nabyt (uz zname numeric a character). Faktory se pouzivaji k reprezantaci kategorialnich dat (jako napriklad dotaznikove skaly). Vypadaji jako textove vektory, ale rozdil je, ze kazda hodnota ma za sebou cislo, diky kteremu jsou hodnoty serazeny. Textove vektory jsou serazeny pouze podle abecedy.</p>
 <pre class="r"><code>text &lt;- c(&quot;velmi spatny&quot;, &quot;spatny&quot;, &quot;dobry&quot;, &quot;velmi dobry&quot;)
 skala &lt;- factor(x = text,
@@ -277,7 +279,7 @@ sort(text)</code></pre>
 <p>Vsechny textove promenne jsou automaticky nacteny jako factory ve funkci <code>read.csv</code>. Pokud chcete toto nastaveni zmenit a nacist textove promenne jako textove pouzijte <code>stringsAsFactors = FALSE</code>. Nacteme data jeste jednou, tentokrat chceme nacist textove promenne jako textove, ne jako faktory.</p>
 <pre class="r"><code>spotify &lt;- read.csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv&quot;, 
                     stringsAsFactors = FALSE)</code></pre>
-<p>Stejne tak muzete vami vytvorene datove matice ulozit do csv souboru pomoci funkce <code>write.csv</code>. Vetsina klicovych argumentu jako <code>path</code> nebo <code>sep</code> jsou shodne s predchozi funkci. Dalsimi dulezitymi argumenty jsou <code>row.names</code> a <code>col.names</code>, ktere nabiraji hodnot <code>TRUE</code>/<code>FALSE</code> a znaci, zda chcete ulozit nazvy radku nebo sloupcu. Objekt, ktery chcete z vasi R session ulozit specifikujete v argumentu <code>x</code>./</p>
+<p>Stejne tak muzete vami vytvorene datove matice ulozit do csv souboru pomoci funkce <code>write.csv</code>. Vetsina klicovych argumentu jako <code>path</code> nebo <code>sep</code> jsou shodne s predchozi funkci. Dalsimi dulezitymi argumenty jsou <code>row.names</code> a <code>col.names</code>, ktere nabiraji hodnot <code>TRUE</code>/<code>FALSE</code> a znaci, zda chcete ulozit nazvy radku nebo sloupcu. Objekt, ktery chcete z vasi R session ulozit specifikujete v argumentu <code>x</code>.</p>
 <pre class="r"><code>#ulozme prvnich 5 radku z dat spotify
 spotify_5row &lt;- head(spotify, 5)
 write.csv(file = &quot;spotify.csv&quot;, x = spotify_5row, row.names = FALSE)</code></pre>

@@ -96,7 +96,8 @@ spotify <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesd
 ```
 
 
-Stejne tak muzete vami vytvorene datove matice ulozit do csv souboru pomoci funkce `write.csv`. Vetsina klicovych argumentu jako `path` nebo `sep` jsou shodne s predchozi funkci. Dalsimi dulezitymi argumenty jsou `row.names` a `col.names`, ktere nabiraji hodnot `TRUE`/`FALSE` a znaci, zda chcete ulozit nazvy radku nebo sloupcu. Objekt, ktery chcete z vasi R session ulozit specifikujete v argumentu `x`./
+Stejne tak muzete vami vytvorene datove matice ulozit do csv souboru pomoci funkce `write.csv`. Vetsina klicovych argumentu jako `path` nebo `sep` jsou shodne s predchozi funkci. Dalsimi dulezitymi argumenty jsou `row.names` a `col.names`, ktere nabiraji hodnot `TRUE`/`FALSE` a znaci, zda chcete ulozit nazvy radku nebo sloupcu. Objekt, ktery chcete z vasi R session ulozit specifikujete v argumentu `x`.
+
 ```{r}
 #ulozme prvnich 5 radku z dat spotify
 spotify_5row <- head(spotify, 5)
