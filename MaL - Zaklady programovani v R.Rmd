@@ -88,6 +88,8 @@ skala <- factor(x = text,
 sort(text)
 sort(skala)
 ```
+
+
 Vsechny textove promenne jsou automaticky nacteny jako factory ve funkci `read.csv`. Pokud chcete toto nastaveni zmenit a nacist textove promenne jako textove pouzijte `stringsAsFactors = FALSE`. Nacteme data jeste jednou, tentokrat chceme nacist textove promenne jako textove, ne jako faktory.
 
 ```{r}
