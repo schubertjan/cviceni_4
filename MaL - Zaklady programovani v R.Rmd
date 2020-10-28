@@ -1,0 +1,199 @@
+---
+title: "MaL - Zaklady programovani v R"
+author: "Jan Schubert, Ivan Petrusek"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+V tomto cviceni se budeme venovat nekolika zakladnim konceptum, ktere vam umozni vyuzit naplno vyhody programovaciho jazyke. Toto cviceni mozna nebude tak zabavne jako ty predchozi :), ale o to vice bude uzitecne.
+
+
+Prvni koncept, ktery si vysvetlime je princip working directory. Kazdy soubor na vasem pocitaci (nebo na jakemkoliv serveru) je ulozen v adresari pod urcitou cestou (path). Tato cesta (path) rika vasemu operacnimu systemu, kde se soubor nachazi. Stejne tak ji budeme pouzivat my, abychom dali R vedet, ze chceme napriklad nacist soubor z urciteho mista. Cesty (paths) mohou byt bud:
+
+1. Absolutni
+2. Relativni
+
+Kazdy operacni system ma domovsky adresar, od ktereho zacinaji vsechny ostatni cesty. V programu Windows je to vetsinou `C:/Users/`, v systemu Linux vetsinou `/root/`. Absolutni cesta uplnou cestu k vasemu souboru od domovskeho adresare. Vytisknout si ji muzete pomoci funkce `getwd()`.
+```{r}
+getwd()
+```
+
+
+Vetsinou ale nebudete pracovat v domovskem adresari a vypisovani cele cesty muze byt zdlouhave. Proto budete vetsinou pouzivat relativni cestu k vasemu souboru. Jak vidite z me working directory, pracuji prave v adresari Cviceni 4. Pokud bych chtel napriklad do R nacist soubor z tohoto adresare, muzu bud vypsat celou cestu, nebo vyuzit relativni cesty, ktera se v R znaci pomoci tecky - `.`. Kuprikladu mohu vytisknout vsechny soubory v mem soucasnem adresari pomoci prikazu `list.files("./")` aniz bych musel specifikovat celou cestu k memu adresari `C:/Users/schubertj/OneDrive - Kantar/Documents/MaL/Cviceni 4`.
+```{r}
+list.files("./")
+```
+
+
+Vasi working directory si muzete nastavit pomoci funkce `setwd`, ktera ma jediny argument a tim je cesta k adresari, ktery chcete nastavit jako misto, kde bude R hledat v souborech.
+```{r}
+setwd("C:/Users/schubertj/OneDrive - Kantar/Documents/MaL")
+```
+
+
+Ted se zamerime na to, jak muzeme do R nacist externi data. Doted jsme vsechna data, ktera jsme pouzivali zadavali do R primo. V realnem pouzivani ale budete temer vzdy pouzivat externi data. Nejcasteji budete nacitat data ve formatu csv. V base R muzete k nacteni pouzit funkci `read.csv`. Vetsina parametru funkce `read.csv` ma nejaky default a tak jedinym povinnym argumentem je `file`, kde specikujete cestu k souboru, ktery chcete nacist. To bude vetsinou cesta ve vasem pocitaci (viz predchozi koncept o absolutni a relativni ceste), ale muzete to byt i odkaz na csv soubor ulozeny na internetu. Pojdme si zkusit nacist data ze spotify, ktera obsahuji data o ruznych zanrech. [Zde](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-21/readme.md) se muzete dozvedet vice o techto datech.
+```{r}
+spotify <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv")
+
+head(spotify)
+```
+
+
+V tomto pripade se data nacetla v poradku se zakladnimi hodnotami ostatnich parametru. Ne vzdy to ale bude tak snadne. Pojdte si nyni projit nektere z dalsich parametru, ktere budeme potrebovat cas od casu zmenit. Prvnim argumentem, na ktery se podivame je `sep`. Tento argument rika R, jaky symbol ma pouzit na rozdeleni radku. Vetsina csv souboru pouziva `,`, ale v Cesku je bezne pouzivat jako oddelovaci symbol `;`. Zakladni nasteveni (`sep = ","`) muzete zmenit na jakykoliv symbol:
+
+* `sep = ";"` pro strednik
+* `sep = "\t"` pro tabulator
+* `sep = " "` pro mezeru 
+
+Zde je priklad nacteni souboru, ktery je oddeleny strednikem
+```{r}
+read.csv("https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik.csv", 
+         sep = ";")
+```
+
+
+Stejne tak dulezity je argument `dec`. V nem specifikujete, jaky symbol ma R ocekavat v cislech na miste desetinne carky. Vetsinou (ne vsak vzdy, je potreba zkontrolovat) plati nasledujici:
+* pokud je csv dokument oddelen carkou, bude symbol na desetinna mista tecka `.`
+* pokud je csv dokument oddelen strednikem, bude symbol na desetinna mista carka `,`
+
+```{r}
+read.csv("https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik_carka_desetinne.csv",
+         sep = ";", 
+         dec = ",")
+```
+
+
+Dalsim dulezitym argumentem, ktery uvedeme je `header`. Ten udava, zda ma R pouzit prvni radek dat jako nazev sloupcu vasi tabulky. Defaultni nastaveni je `header = TRUE`. Pokud vase data neobsahuji nazvy sloupcu pouzijte `header=FALSE`.
+```{r}
+read.csv("https://raw.githubusercontent.com/schubertjan/cviceni_4/master/data_strednik.csv", 
+         sep = ";", header = FALSE)
+```
+
+
+K ukazce posledniho argementu si nejdrive musime priblizit koncept faktoru (factors). Faktory jsou dalsi tridou (class), kterou muze vektor nabyt (uz zname numeric a character). Faktory se pouzivaji k reprezantaci kategorialnich dat (jako napriklad dotaznikove skaly). Vypadaji jako textove vektory, ale rozdil je, ze kazda hodnota ma za sebou cislo, diky kteremu jsou hodnoty serazeny. Textove vektory jsou serazeny pouze podle abecedy.
+```{r}
+text <- c("velmi spatny", "spatny", "dobry", "velmi dobry")
+skala <- factor(x = text,
+                levels = c("velmi dobry", "dobry", "spatny", "velmi spatny"))
+sort(text)
+sort(skala)
+```
+Vsechny textove promenne jsou automaticky nacteny jako factory ve funkci `read.csv`. Pokud chcete toto nastaveni zmenit a nacist textove promenne jako textove pouzijte `stringsAsFactors = FALSE`. Nacteme data jeste jednou, tentokrat chceme nacist textove promenne jako textove, ne jako faktory.
+
+```{r}
+spotify <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv", stringsAsFactors = FALSE)
+```
+
+
+Stejne tak muzete vami vytvorene datove matice ulozit do csv souboru pomoci funkce `write.csv`. Vetsina klicovych argumentu jako `path` nebo `sep` jsou shodne s predchozi funkci. Dalsimi dulezitymi argumenty jsou `row.names` a `col.names`, ktere nabiraji hodnot `TRUE`/`FALSE` a znaci, zda chcete ulozit nazvy radku nebo sloupcu. Objekt, ktery chcete z vasi R session ulozit specifikujete v argumentu `x`./
+```{r}
+#ulozme prvnich 5 radku z dat spotify
+spotify_5row <- head(spotify, 5)
+write.csv(file = "spotify.csv", x = spotify_5row, row.names = FALSE)
+```
+
+Posledni zpusob importovani dat, ktery si ukazeme, je import souboru vytvorenych v programu SPSS (koncici priponou .sav). SPSS je program pouzivanych pri analyze sociologickych dat. Importovat ho muzete pomoci nabidky v programu Rstudio.
+
+
+![](C:/Users/schubertj/OneDrive - Kantar/Documents/MaL/Cviceni 4/spss import.png)
+
+Nebo pomoci nasledujiciho kodu.
+```{r}
+library(haven)
+spss_data <- read_sav("./V2006_F1.sav")
+```
+
+
+Dalsim dulezitym konceptem, ktery v programovani budete casto vyuzivat jsou takzvane `for loops`. Ty vyuzijeme, pokud potrebujeme stejnou operaci vykonat vicekrat. Rekneme, ze nas zajima, kolik muzeme ocekavat pozitivnich pripadu nemoci Covid-19 na konci rijna pokud kazdy den pribude 6% pripadu. V nasem pripade vime, kolik bylo pozitivnich na zacatku zari (368) a kazdy dalsi den chceme cislo z minuleho dne zvysit o 6%. Mame tedy `for loop` o delce 30. Nasledujici kod ukazuje, jak takovou ulohu implementovat.
+```{r}
+#nejdrive si ukazeme jednoduchy prikla, abychom vysvetlili principy for loops
+cisla <- c(1:5)
+for(cislo in cisla) {
+  print(cislo)
+}
+```
+
+Nyni se tedy pustne do prikladu 
+```{r}
+zari1 <- 368
+delka_predikce <- 30
+rate <- 1.06
+
+#vytvorime prazdny vektor, do ktereho budeme ukladat denni prirustky
+denni_narust <- rep(NA, delka_predikce)
+# do prvni hodnoty dosadime 1.zari
+denni_narust[1] <- zari1 
+
+#for loop
+for(i in 2:delka_predikce) {
+  denni_narust[i] = denni_narust[i-1] * rate
+}
+
+#hodnota na konci zari
+tail(denni_narust, 1)
+```
+
+
+Vratme se nyni k nasim datum o pisnich ze spotify. Nejdrive se podivame na dimenze nasich dat.
+```{r}
+dim(spotify)
+```
+
+
+Dalsi uzitecna funkci `str`, ktera nam pomuze rychle zjistit, jake tridy (class) jsou jednotlive promenne. 
+```{r}
+str(spotify)
+```
+
+
+Rekneme, ze bychom chteli udelat urcitou operaci pouze pokud dana hodnota splnuje urcitou podminku. `valance` vyjadruje pozitivitu pisnisky. Muze nabyt hodnot od 0 do 1, kde 0 znaci smutnou a 1 veselou melodii. Chceme vytvorit novou promennou `valance_type`, ktera bude nabyvat dvou hodnot: "pozitivni" pokud valance je > 0.5 a "negativni" pokud valance je <= 0.5. K temto operacim pouzivame `if` statementy. Nasledujici kod ukazuje, jak pouzit `if` na operaci, kterou chceme provest.
+
+
+Nejdrive si celou operaci ukazeme na jednoduchem pripadu, abychom pochopili principy `if` statementu.
+```{r}
+jmeno <- c("Petr")
+
+if(jmeno == "Petr") {
+  print("toto je Petr")
+} else {
+  print("totovje nekdo jiny")
+}
+
+jmeno <- "Pavel"
+if(jmeno == "Petr") {
+  print("toto je Petr")
+} else if(jmeno == "Pavel") {
+  print("toto je Pavel")
+} else {
+  print("toto je nekdo jiny")
+}
+```
+
+
+Jak jste si vsimli podminka v `if` muze mit pouze jednu hodnotu. Pro nas pripad tedy budeme muset zkombinovat `for` a `if`. 
+```{r}
+#nejdrive vytvorime novou promennou, do ktere budeme ukladat vysledky a naplnime ji dummy hodnout (napriklad 0)
+spotify$valence_type <- 0
+
+pocet_radku <- dim(spotify)[1]
+
+for(i in 1:pocet_radku) {
+  if(spotify$valence[i] > 0.5) {
+    spotify$valence_type[i] <- "pozitivni"  
+  } else if(spotify$valence[i] <= 0.5) {
+    spotify$valence_type[i] <- "negativni"  
+  }
+}
+
+table(spotify$valence_type)  
+```
+
+Tato operace je tak casta, ze pro ni v R existuje specialni funkce `ifelse`. Tato funkce funguje stejne jako for loop s if statementem, ale  
+```{r}
+spotify$valance_type2 <- ifelse(spotify$valence > 0.5, "pozitivni", "negativni")
+
+all(spotify$valance_type1 == spotify$valance_type2)
+```
